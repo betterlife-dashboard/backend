@@ -43,18 +43,6 @@ jobs:
     needs: detect-changes
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        include:
-          - service: gateway
-            outputKey: gateway
-          - service: auth
-            outputKey: auth
-          - service: todo
-            outputKey: todo
-
-    if: needs.detect-changes.outputs[matrix.outputKey] == 'true'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,12 +59,30 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push image
+      - name: Build and push gateway
+        if: needs.detect-changes.outputs.gateway == 'true'
         run : |
-          docker build -f ${{ matrix.service }}/Dockerfile -t ${{ env.DOCKERHUB_NAMESPACE }}/${{ matrix.service }}:${{ env.IMAGE_TAG }} ${{ matrix.service }}
-          docker push ${{ env.DOCKERHUB_NAMESPACE }}/${{ matrix.service }}:${{ env.IMAGE_TAG }}
-          docker tag ${{ env.DOCKERHUB_NAMESPACE }}/${{ matrix.service }}:${{ env.IMAGE_TAG }} ${{ env.DOCKERHUB_NAMESPACE }}/${{ matrix.service }}:latest
-          docker push ${{ env.DOCKERHUB_NAMESPACE }}/${{ matrix.service }}:latest
+          docker build -f gateway/Dockerfile -t ${{ env.DOCKERHUB_NAMESPACE }}/gateway:${{ env.IMAGE_TAG }} gateway
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/gateway:${{ env.IMAGE_TAG }}
+          docker tag ${{ env.DOCKERHUB_NAMESPACE }}/gateway:${{ env.IMAGE_TAG }} ${{ env.DOCKERHUB_NAMESPACE }}/gateway:latest
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/gateway:latest
+
+      - name: Build and push auth
+        if: needs.detect-changes.outputs.auth == 'true'
+        run : |
+          docker build -f auth/Dockerfile -t ${{ env.DOCKERHUB_NAMESPACE }}/auth:${{ env.IMAGE_TAG }} auth
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/auth:${{ env.IMAGE_TAG }}
+          docker tag ${{ env.DOCKERHUB_NAMESPACE }}/auth:${{ env.IMAGE_TAG }} ${{ env.DOCKERHUB_NAMESPACE }}/auth:latest
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/auth:latest
+
+      - name: Build and push todo
+        if: needs.detect-changes.outputs.todo == 'true'
+        run : |
+          docker build -f todo/Dockerfile -t ${{ env.DOCKERHUB_NAMESPACE }}/todo:${{ env.IMAGE_TAG }} todo
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/todo:${{ env.IMAGE_TAG }}
+          docker tag ${{ env.DOCKERHUB_NAMESPACE }}/todo:${{ env.IMAGE_TAG }} ${{ env.DOCKERHUB_NAMESPACE }}/todo:latest
+          docker push ${{ env.DOCKERHUB_NAMESPACE }}/todo:latest
+
 
   deploy:
     name: Deploy to EC2
