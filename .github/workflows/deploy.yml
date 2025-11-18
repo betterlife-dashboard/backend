@@ -45,9 +45,15 @@ jobs:
 
     strategy:
       matrix:
-        service: [gateway, auth, todo]
+        include:
+          - service: gateway
+            outputKey: gateway
+          - service: auth
+            outputKey: auth
+          - service: todo
+            outputKey: todo
 
-    if: needs.detect-changes.outputs[matrix.service] == 'true'
+    if: needs.detect-changes.outputs[matrix.outputKey] == 'true'
 
     steps:
       - name: Checkout code
