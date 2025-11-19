@@ -148,9 +148,7 @@ public class TodoService {
     @Transactional
     public void closePastTodos() {
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Todo> todos = todoRepository.findAllByTodoStatusPlannedAndActiveUntilBefore(currentTime);
-        for (Todo todo : todos) {
-            todo.updateStatus(TodoStatus.EXPIRED);
-        }
+        List<Todo> todos = todoRepository.findAllByStatusAndActiveUntilBefore(TodoStatus.PLANNED, currentTime);
+        todos.forEach(todo -> todo.updateStatus(TodoStatus.EXPIRED));
     }
 }
