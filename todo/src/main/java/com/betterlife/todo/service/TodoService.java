@@ -64,8 +64,8 @@ public class TodoService {
                     .type(todoRequest.getType())
                     .status(TodoStatus.PLANNED)
                     .repeatDays(0)
-                    .activeFrom(LocalDateTime.now())
-                    .activeUntil(LocalDateTime.now())
+                    .activeFrom(activeFrom)
+                    .activeUntil(activeUntil)
                     .build();
             todo.addChildTodo(child);
         }
@@ -137,8 +137,8 @@ public class TodoService {
                         .type(todo.getType())
                         .status(TodoStatus.PLANNED)
                         .repeatDays(0)
-                        .activeFrom(LocalDateTime.now())
-                        .activeUntil(LocalDateTime.now())
+                        .activeFrom(LocalDate.now().atStartOfDay())
+                        .activeUntil(LocalDate.now().plusDays(1).atStartOfDay().minusNanos(1))
                         .build();
                 todo.addChildTodo(child);
             }
