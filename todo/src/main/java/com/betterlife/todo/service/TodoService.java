@@ -25,7 +25,7 @@ public class TodoService {
 
     public List<TodoResponse> getTodosByDate(Long userId, LocalDate date) {
         LocalDateTime todayStart = date.atStartOfDay();
-        LocalDateTime todayEnd = date.plusDays(1).atStartOfDay().minusNanos(1);
+        LocalDateTime todayEnd = date.plusDays(1).atStartOfDay().minusSeconds(1);
         return todoRepository.findAllByUserIdAndActiveFromBeforeAndActiveUntilAfter(userId, todayEnd, todayStart)
                 .stream()
                 .map(TodoResponse::fromEntity)
@@ -44,6 +44,9 @@ public class TodoService {
         userClient.getUser(userId);
         LocalDateTime activeFrom = todoRequest.getActiveFrom();
         LocalDateTime activeUntil = todoRequest.getActiveUntil();
+        if (todoRequest.getRepeatDays() == 0 && activeFrom.isAfter(activeUntil)) {
+            throw new InvalidRequestException("날짜 설정이 잘못되었습니다.");
+        }
         if (todoRequest.getRepeatDays() != 0) {
             activeFrom = null;
             activeUntil = null;
@@ -64,8 +67,8 @@ public class TodoService {
                     .type(todoRequest.getType())
                     .status(TodoStatus.PLANNED)
                     .repeatDays(0)
-                    .activeFrom(activeFrom)
-                    .activeUntil(activeUntil)
+                    .activeFrom(LocalDate.now().atStartOfDay())
+                    .activeUntil(LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1))
                     .build();
             todo.addChildTodo(child);
         }
@@ -138,7 +141,7 @@ public class TodoService {
                         .status(TodoStatus.PLANNED)
                         .repeatDays(0)
                         .activeFrom(LocalDate.now().atStartOfDay())
-                        .activeUntil(LocalDate.now().plusDays(1).atStartOfDay().minusNanos(1))
+                        .activeUntil(LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1))
                         .build();
                 todo.addChildTodo(child);
             }
