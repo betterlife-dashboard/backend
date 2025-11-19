@@ -24,9 +24,9 @@ public class TodoService {
     private final UserClient userClient;
 
     public List<TodoResponse> getTodosByDate(Long userId, LocalDate date) {
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.plusDays(1).atStartOfDay();
-        return todoRepository.findAllByUserIdAndDateWithinActivePeriod(userId, start, end)
+        LocalDateTime todayStart = date.atStartOfDay();
+        LocalDateTime todayEnd = date.plusDays(1).atStartOfDay().minusNanos(1);
+        return todoRepository.findAllByUserIdAndActiveFromBeforeAndActiveUntilAfter(userId, todayEnd, todayStart)
                 .stream()
                 .map(TodoResponse::fromEntity)
                 .toList();
