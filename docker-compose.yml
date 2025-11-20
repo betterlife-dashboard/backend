@@ -44,6 +44,7 @@ services:
       AUTH_DATASOURCE_URL: jdbc:mysql://mysql-auth:3306/auth_db
       AUTH_DATASOURCE_USERNAME: root
       AUTH_DATASOURCE_PASSWORD: root
+      TODO_SERVICE_URL: http://todo:8082
       # Redis (반드시 서비스명 지정)
       AUTH_REDIS_HOST: redis
       AUTH_REDIS_PORT: 6379

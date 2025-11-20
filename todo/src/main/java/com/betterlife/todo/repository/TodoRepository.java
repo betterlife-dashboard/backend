@@ -32,4 +32,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             TodoStatus status,
             LocalDateTime activeUntilBefore
     );
+
+    void deleteAllByUserId(Long userId);
 }

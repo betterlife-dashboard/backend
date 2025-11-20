@@ -115,6 +115,11 @@ public class TodoService {
         todoRepository.deleteById(todoId);
     }
 
+    @Transactional
+    public void deleteUser(Long userId) {
+        todoRepository.deleteAllByUserId(userId);
+    }
+
     public List<TodoResponse> getRecurTodos(Long userId) {
         return todoRepository.findAllByUserIdAndIsRecurring(userId, true)
                 .stream()
