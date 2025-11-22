@@ -1,5 +1,6 @@
 package com.betterlife.todo.service;
 
+import com.betterlife.todo.client.UserClient;
 import com.betterlife.todo.domain.Todo;
 import com.betterlife.todo.dto.*;
 import com.betterlife.todo.enums.TodoStatus;
@@ -113,6 +114,11 @@ public class TodoService {
             throw new AccessDeniedException("이 Todo에 접근할 권한이 없습니다.");
         }
         todoRepository.deleteById(todoId);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        todoRepository.deleteAllByUserId(userId);
     }
 
     public List<TodoResponse> getRecurTodos(Long userId) {

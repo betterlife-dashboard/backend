@@ -1,16 +1,17 @@
-package com.betterlife.todo.service;
+package com.betterlife.todo.client;
 
 import com.betterlife.todo.dto.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-@Service
+@Client
 @RequiredArgsConstructor
 public class UserClient {
 

@@ -1,5 +1,6 @@
 package com.betterlife.auth.service;
 
+import com.betterlife.auth.client.TodoClient;
 import com.betterlife.auth.domain.User;
 import com.betterlife.auth.dto.*;
 import com.betterlife.auth.exception.DuplicateUserException;
@@ -22,11 +23,13 @@ public class AuthService {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final StringRedisTemplate redisTemplate;
     private final JwtProvider jwtProvider;
+    private final TodoClient todoClient;
 
     public UserResponse me(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
         return UserResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
@@ -87,6 +90,15 @@ public class AuthService {
         if (stored != null && stored.equals(refreshToken)) {
             redisTemplate.delete(key);
         }
+    }
+
+    public void withdraw(String refreshToken) {
+        Long userId = jwtProvider.getUserId(refreshToken);
+
+        this.logout(refreshToken);
+        // 위험한 요청을 먼저 처리!
+        todoClient.deleteAllTodo(userId);
+        userRepository.deleteById(userId);
     }
 
     public String checkRefresh(String refreshToken) {
