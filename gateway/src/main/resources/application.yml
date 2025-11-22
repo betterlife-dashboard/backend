@@ -26,13 +26,6 @@ spring:
 jwt:
   secret: ${jwt.secret}
 
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    url: /v3/api-docs
-
-
 management:
   endpoints:
     web:
