@@ -29,7 +29,7 @@ up-build:
 
 # DB/Redis만 실행
 up-db:
-	docker compose  up -d mysql-auth mysql-todo redis
+	docker compose  up -d mysql-auth mysql-todo mysql-notification redis
 
 # 특정 서비스만 재빌드 + 재시작
 up-auth:
