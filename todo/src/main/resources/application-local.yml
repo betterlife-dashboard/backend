@@ -8,7 +8,16 @@ spring:
       ddl-auto: update
   flyway:
     enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
 
 auth:
   service:
     url: http://localhost:8081
+
+rabbit:
+  exchanges:
+    todo: "todo.exchange"

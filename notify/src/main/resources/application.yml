@@ -8,6 +8,11 @@ spring:
     url: ${NOTIFY_DATASOURCE_URL}
     username: ${NOTIFY_DATASOURCE_USERNAME}
     password: ${NOTIFY_DATASOURCE_PASSWORD}
+  rabbitmq:
+    host: ${RABBIT_URL}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
 
 springdoc:
   api-docs:

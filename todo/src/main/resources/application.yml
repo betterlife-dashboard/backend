@@ -8,6 +8,11 @@ spring:
     url: ${TODO_DATASOURCE_URL}
     username: ${TODO_DATASOURCE_USERNAME}
     password: ${TODO_DATASOURCE_PASSWORD}
+  rabbitmq:
+    host: ${RABBIT_URL}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
 
 auth:
   service:

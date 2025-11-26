@@ -50,6 +50,21 @@ services:
       timeout: 3s
       retries: 30
 
+  rabbit:
+    image: rabbitmq:4.2-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment: { RABBITMQ_DEFAULT_USER: admin, RABBITMQ_DEFAULT_PASS: admin }
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   auth:
     build: ./auth
     environment:
@@ -111,3 +126,4 @@ volumes:
   todo-data:
   notify-data:
   redis-data:
+  rabbit-data:
