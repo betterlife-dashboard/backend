@@ -14,6 +14,19 @@ spring:
     username: ${RABBIT_USERNAME}
     password: ${RABBIT_PASSWORD}
 
+rabbit:
+  exchanges:
+    auth: "auth.exchange"
+    todo: "todo.exchange"
+  deadline:
+    queue:
+      name: "todo.deadline.queue"
+      key: "todo.deadline.key"
+  reminder:
+    queue:
+      name: "todo.reminder.queue"
+      key: "todo.reminder.key"
+
 springdoc:
   api-docs:
     enabled: true

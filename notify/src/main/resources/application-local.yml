@@ -13,16 +13,3 @@ spring:
     port: 5672
     username: admin
     password: admin
-
-rabbit:
-  exchanges:
-    auth: "auth.exchange"
-    todo: "todo.exchange"
-  deadline:
-    queue:
-      name: "todo.deadline.queue"
-      key: "todo.deadline.key"
-  reminder:
-    queue:
-      name: "todo.reminder.queue"
-      key: "todo.reminder.key"

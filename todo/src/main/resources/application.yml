@@ -25,6 +25,19 @@ springdoc:
   swagger-ui:
     enabled: false
 
+rabbit:
+  exchanges:
+    auth: "auth.exchange"
+    todo: "todo.exchange"
+  deadline:
+    queue:
+      name: "todo.deadline.queue"
+      key: "todo.deadline.key"
+  reminder:
+    queue:
+      name: "todo.reminder.queue"
+      key: "todo.reminder.key"
+
 management:
   endpoints:
     web:

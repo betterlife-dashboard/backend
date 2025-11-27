@@ -17,7 +17,3 @@ spring:
 auth:
   service:
     url: http://localhost:8081
-
-rabbit:
-  exchanges:
-    todo: "todo.exchange"
