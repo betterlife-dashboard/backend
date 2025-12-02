@@ -16,8 +16,8 @@ public class NotifyController {
 
     private final NotifyService notifyService;
 
-    @GetMapping("/{todo-id}")
-    public ResponseEntity<TodoNotifyDetailResponse> getNotifyByTodoId(@PathVariable("todo-id") Long todoId, @RequestHeader("X-User-Id") Long userId) {
+    @GetMapping("/{todoId}")
+    public ResponseEntity<TodoNotifyDetailResponse> getNotifyByTodoId(@PathVariable("todoId") Long todoId, @RequestHeader("X-User-Id") Long userId) {
         return ResponseEntity.ok(notifyService.getNotificationByTodoId(userId, todoId));
     }
 
