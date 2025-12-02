@@ -55,45 +55,7 @@ public class NotifyService {
     public void createDeadlineNotification(TodoEvent event) {
         NotificationTemplate nt = notificationTemplateRepository.findByEventTypeAndChannelTypeAndLang(EventType.SCHEDULE_DEADLINE, ChannelType.WEB, Lang.KO)
                         .orElseThrow(() -> new RuntimeException("해당 템플릿을 찾을 수 없습니다."));
-        LocalDateTime deadline = LocalDateTime.parse(event.getDeadline());
-        String title = render(
-                nt.getTitleTemplate(),
-                Map.of("title", event.getTitle())
-        );
-        String remainTime = "";
-        if (event.getRemainTime().equals("1h")) {
-            remainTime = "1시간";
-            deadline = deadline.minusHours(1);
-        }
-        else if (event.getRemainTime().equals("1d")) {
-            remainTime = "1일";
-            deadline = deadline.minusDays(1);
-        }
-        else if (event.getRemainTime().equals("3d")) {
-            remainTime = "3일";
-            deadline = deadline.minusDays(3);
-        }
-        else if (event.getRemainTime().equals("1w")) {
-            remainTime = "1주";
-            deadline = deadline.minusDays(3);
-        }
-        String body = render(
-                nt.getBodyTemplate(),
-                Map.of(
-                        "title", event.getTitle(),
-                        "deadline", deadline.format(formatter),
-                        "timeLeft", remainTime
-                )
-        );
-        Notification notification = Notification.builder()
-                .userId(event.getUserId())
-                .todoId(event.getTodoId())
-                .eventType(EventType.SCHEDULE_DEADLINE)
-                .remainTime(event.getRemainTime())
-                .title(title)
-                .body(body)
-                .sendAt(deadline)
-                .build();
+        Notification notification = toNotification(event, nt, EventType.SCHEDULE_DEADLINE);
         notificationRepository.save(notification);
     }
 
@@ -110,6 +72,20 @@ public class NotifyService {
     public void createReminderNotification(TodoEvent event) {
         NotificationTemplate nt = notificationTemplateRepository.findByEventTypeAndChannelTypeAndLang(EventType.SCHEDULE_REMINDER, ChannelType.WEB, Lang.KO)
                 .orElseThrow(() -> new RuntimeException("해당 템플릿을 찾을 수 없습니다."));
+        Notification notification = toNotification(event, nt, EventType.SCHEDULE_REMINDER);
+        notificationRepository.save(notification);
+    }
+
+    private String render(String template, Map<String, String> values) {
+        String result = template;
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            String placeholder = "{" + entry.getKey() + "}";
+            result = result.replace(placeholder, entry.getValue());
+        }
+        return result;
+    }
+
+    private Notification toNotification(TodoEvent event, NotificationTemplate nt, EventType eventType) {
         LocalDateTime deadline = LocalDateTime.parse(event.getDeadline());
         String title = render(
                 nt.getTitleTemplate(),
@@ -140,24 +116,14 @@ public class NotifyService {
                         "timeLeft", remainTime
                 )
         );
-        Notification notification = Notification.builder()
+        return Notification.builder()
                 .userId(event.getUserId())
                 .todoId(event.getTodoId())
-                .eventType(EventType.SCHEDULE_REMINDER)
+                .eventType(eventType)
                 .remainTime(event.getRemainTime())
                 .title(title)
                 .body(body)
                 .sendAt(deadline)
                 .build();
-        notificationRepository.save(notification);
-    }
-
-    private String render(String template, Map<String, String> values) {
-        String result = template;
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            String placeholder = "{" + entry.getKey() + "}";
-            result = result.replace(placeholder, entry.getValue());
-        }
-        return result;
     }
 }
