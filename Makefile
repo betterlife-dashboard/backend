@@ -29,7 +29,7 @@ up-build:
 
 # DB/Redis만 실행
 up-db:
-	docker compose  up -d mysql-auth mysql-todo redis
+	docker compose  up -d mysql-auth mysql-todo mysql-notify redis rabbit
 
 # 특정 서비스만 재빌드 + 재시작
 up-auth:
@@ -37,6 +37,9 @@ up-auth:
 
 up-todo:
 	docker compose  up -d --build todo
+
+up-notify:
+	docker compose  up -d --build notify
 
 up-gateway:
 	docker compose  up -d --build gateway
@@ -55,6 +58,9 @@ logs-auth:
 logs-todo:
 	docker compose  logs -f todo
 
+logs-notify:
+	docker compose  logs -f notify
+
 logs-gateway:
 	docker compose  logs -f gateway
 
@@ -65,4 +71,4 @@ logs-gateway:
 clean:
 	docker system prune -f
 
-.PHONY: help up up-db up-auth up-todo up-gateway down logs-auth logs-todo logs-gateway clean
+.PHONY: help up up-db up-auth up-todo up-notify up-gateway down logs-auth logs-todo logs-notify logs-gateway clean

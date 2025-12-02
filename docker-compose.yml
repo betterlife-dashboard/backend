@@ -25,6 +25,19 @@ services:
       timeout: 3s
       retries: 30
 
+  mysql-notify:
+    image: mysql:8
+    environment: { MYSQL_ROOT_PASSWORD: root, MYSQL_DATABASE: notify_db }
+    ports:
+      - "3309:3306"
+    volumes:
+      - notify-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent" ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
   redis:
     image: redis:7
     ports:
@@ -36,6 +49,21 @@ services:
       interval: 3s
       timeout: 3s
       retries: 30
+
+  rabbit:
+    image: rabbitmq:4.2-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment: { RABBITMQ_DEFAULT_USER: admin, RABBITMQ_DEFAULT_PASS: admin }
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   auth:
     build: ./auth
@@ -68,6 +96,10 @@ services:
       TODO_DATASOURCE_USERNAME: root
       TODO_DATASOURCE_PASSWORD: root
       AUTH_SERVICE_URL: http://auth:8081
+      RABBIT_URL: rabbit
+      RABBIT_PORT: 5672
+      RABBIT_USERNAME: admin
+      RABBIT_PASSWORD: admin
       # Hikari가 DB 준비전 실패하지 않게(0 = fail-fast 끔)
       SPRING_DATASOURCE_HIKARI_INITIALIZATIONFAILTIMEOUT: "0"
     ports:
@@ -77,16 +109,39 @@ services:
         condition: service_healthy
     restart: on-failure
 
+  notify:
+    build: ./notify
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NOTIFY_DATASOURCE_URL: jdbc:mysql://mysql-notify:3306/notify_db
+      NOTIFY_DATASOURCE_USERNAME: root
+      NOTIFY_DATASOURCE_PASSWORD: root
+      RABBIT_URL: rabbit
+      RABBIT_PORT: 5672
+      RABBIT_USERNAME: admin
+      RABBIT_PASSWORD: admin
+      # Hikari가 DB 준비전 실패하지 않게(0 = fail-fast 끔)
+      SPRING_DATASOURCE_HIKARI_INITIALIZATIONFAILTIMEOUT: "0"
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql-notify:
+        condition: service_healthy
+    restart: on-failure
+
   gateway:
     build: ./gateway
     environment:
       SPRING_PROFILES_ACTIVE: docker
       AUTH_SERVICE_URL: http://auth:8081
       TODO_SERVICE_URL: http://todo:8082
+      NOTIFY_SERVICE_URL: http://notify:8083
       OPENAPI_SERVICES_0_NAME: auth
       OPENAPI_SERVICES_0_URL: http://auth:8081
       OPENAPI_SERVICES_1_NAME: todo
       OPENAPI_SERVICES_1_URL: http://todo:8082
+      OPENAPI_SERVICES_2_NAME: notify
+      OPENAPI_SERVICES_2_URL: http://notify:8083
       FRONTEND_URL: http://localhost:5173
       JWT_SECRET: this-is-a-very-very-long-and-strong-secret-key-for-jwt-signing
     ports:
@@ -96,4 +151,6 @@ services:
 volumes:
   auth-data:
   todo-data:
+  notify-data:
   redis-data:
+  rabbit-data:

@@ -23,6 +23,13 @@ spring:
               filters:
                 - name: JwtAuthFilter
 
+            - id: notify
+              uri: ${notify.service.url}
+              predicates:
+                - Path=/notify/**
+              filters:
+                - name: JwtAuthFilter
+
 jwt:
   secret: ${jwt.secret}
 

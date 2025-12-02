@@ -17,5 +17,4 @@ public class TodoUpdateRequest {
     private TodoStatus status = TodoStatus.PLANNED;
     private LocalDateTime activeFrom;
     private LocalDateTime activeUntil;
-
 }

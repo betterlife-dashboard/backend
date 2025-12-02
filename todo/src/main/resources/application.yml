@@ -8,6 +8,11 @@ spring:
     url: ${TODO_DATASOURCE_URL}
     username: ${TODO_DATASOURCE_USERNAME}
     password: ${TODO_DATASOURCE_PASSWORD}
+  rabbitmq:
+    host: ${RABBIT_URL}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
 
 auth:
   service:
@@ -19,6 +24,19 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     enabled: false
+
+rabbit:
+  exchanges:
+    auth: "auth.exchange"
+    todo: "todo.exchange"
+  deadline:
+    queue:
+      name: "todo.deadline.queue"
+      key: "todo.deadline.key"
+  reminder:
+    queue:
+      name: "todo.reminder.queue"
+      key: "todo.reminder.key"
 
 management:
   endpoints:
