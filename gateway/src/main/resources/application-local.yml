@@ -4,6 +4,8 @@ openapi:
       url: http://localhost:8081
     - name: todo
       url: http://localhost:8082
+    - name: notify
+      url: http://localhost:8083
 
 auth:
   service:
@@ -12,6 +14,10 @@ auth:
 todo:
   service:
     url: http://localhost:8082
+
+notify:
+  service:
+    url: http://localhost:8083
 
 frontend:
   url: http://localhost:5173
