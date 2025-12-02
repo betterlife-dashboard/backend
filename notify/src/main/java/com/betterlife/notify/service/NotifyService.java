@@ -106,7 +106,7 @@ public class NotifyService {
         }
         else if (event.getRemainTime().equals("1w")) {
             remainTime = "1주";
-            deadline = deadline.minusDays(3);
+            deadline = deadline.minusWeeks(1);
         }
         String body = render(
                 nt.getBodyTemplate(),
