@@ -22,5 +22,5 @@ WORKDIR /app
 # Builder에서 jar 파일 복사
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-EXPOSE 8082
+EXPOSE 8084
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
