@@ -30,12 +30,18 @@ public class LoggingAspect {
             log.info("parameter value = {}", arg);
         }
 
-        Object returnObj = proceedingJoinPoint.proceed();
+        try {
+            Object returnObj = proceedingJoinPoint.proceed();
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+            return returnObj;
+        } catch (Exception e) {
+            log.error("Exception occurred: {}", e.getMessage());
+            throw e;
+        }
 
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
 
-        return returnObj;
+
     }
 
     private Method getMethod(ProceedingJoinPoint proceedingJoinPoint) {

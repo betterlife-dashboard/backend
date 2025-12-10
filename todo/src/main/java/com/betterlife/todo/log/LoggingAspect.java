@@ -33,14 +33,15 @@ public class LoggingAspect {
             log.info("parameter value = {}", arg);
         }
 
-        // proceed()를 호출하여 실제 메서드 실행
-        Object returnObj = proceedingJoinPoint.proceed();
-
-        // 메서드의 리턴값 로깅
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
-
-        return returnObj;
+        try {
+            Object returnObj = proceedingJoinPoint.proceed();
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+            return returnObj;
+        } catch (Exception e) {
+            log.error("Exception occurred: {}", e.getMessage());
+            throw e;
+        }
     }
 
 
