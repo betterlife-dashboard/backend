@@ -21,7 +21,7 @@ public class LoggingAspect {
     @Around("cut()")
     public Object aroundLog(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Method method = getMethod(proceedingJoinPoint);
-        log.info("========== Method name = {} =========", method.getName());
+        log.info("========== Method name = {} ==========", method.getName());
 
         Object[] args = proceedingJoinPoint.getArgs();
         if (args.length == 0) log.info("no parameter");
