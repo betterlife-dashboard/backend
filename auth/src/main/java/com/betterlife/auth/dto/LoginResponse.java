@@ -1,13 +1,11 @@
 package com.betterlife.auth.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
+@ToString(exclude = "token")
 public class LoginResponse {
     private String token;
 
