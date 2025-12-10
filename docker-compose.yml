@@ -38,6 +38,19 @@ services:
       timeout: 3s
       retries: 30
 
+  mysql-focus:
+    image: mysql:8
+    environment: { MYSQL_ROOT_PASSWORD: root, MYSQL_DATABASE: focus_db }
+    ports:
+      - "3310:3306"
+    volumes:
+      - focus-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent" ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
   redis:
     image: redis:7
     ports:
@@ -129,6 +142,26 @@ services:
         condition: service_healthy
     restart: on-failure
 
+  focus:
+    build: ./focus
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      FOCUS_DATASOURCE_URL: jdbc:mysql://mysql-focus:3306/focus_db
+      FOCUS_DATASOURCE_USERNAME: root
+      FOCUS_DATASOURCE_PASSWORD: root
+      RABBIT_URL: rabbit
+      RABBIT_PORT: 5672
+      RABBIT_USERNAME: admin
+      RABBIT_PASSWORD: admin
+      # Hikari가 DB 준비전 실패하지 않게(0 = fail-fast 끔)
+      SPRING_DATASOURCE_HIKARI_INITIALIZATIONFAILTIMEOUT: "0"
+    ports:
+      - "8084:8084"
+    depends_on:
+      mysql-notify:
+        condition: service_healthy
+    restart: on-failure
+
   gateway:
     build: ./gateway
     environment:
@@ -152,5 +185,6 @@ volumes:
   auth-data:
   todo-data:
   notify-data:
+  focus-data:
   redis-data:
   rabbit-data:

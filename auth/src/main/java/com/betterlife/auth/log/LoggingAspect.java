@@ -39,9 +39,6 @@ public class LoggingAspect {
             log.error("Exception occurred: {}", e.getMessage());
             throw e;
         }
-
-
-
     }
 
     private Method getMethod(ProceedingJoinPoint proceedingJoinPoint) {

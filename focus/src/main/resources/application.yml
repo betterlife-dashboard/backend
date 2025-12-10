@@ -1,0 +1,41 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: focus
+  datasource:
+    url: ${FOCUS_DATASOURCE_URL}
+    username: ${FOCUS_DATASOURCE_USERNAME}
+    password: ${FOCUS_DATASOURCE_PASSWORD}
+  rabbitmq:
+    host: ${RABBIT_URL}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
+
+rabbit:
+  exchanges:
+    auth: "auth.exchange"
+    todo: "todo.exchange"
+  deadline:
+    queue:
+      name: "todo.deadline.queue"
+      key: "todo.deadline.key"
+  reminder:
+    queue:
+      name: "todo.reminder.queue"
+      key: "todo.reminder.key"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
