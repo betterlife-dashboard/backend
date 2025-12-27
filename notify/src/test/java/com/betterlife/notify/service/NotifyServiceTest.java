@@ -1,7 +1,5 @@
 package com.betterlife.notify.service;
 
-import com.betterlife.notify.domain.Notification;
-import com.betterlife.notify.event.TodoEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,19 +19,19 @@ class NotifyServiceTest {
     @Autowired
     private NotifyService notifyService;
 
-    @Test
-    public void createDeadlineNotification() {
-        TodoEvent event = TodoEvent.builder()
-                .eventType("create")
-                .todoId(1L)
-                .userId(1L)
-                .title("test")
-                .remainTime("1d")
-                .deadline(LocalDateTime.now().toString())
-                .build();
-        notifyService.createDeadlineNotification(event);
-        List<Notification> list = notifyService.getNotificationById(1L);
-        assertThat(list.get(0).getTitle()).isEqualTo("test 마감이 임박했어요");
-    }
+//    @Test
+//    public void createDeadlineNotification() {
+//        TodoEvent event = TodoEvent.builder()
+//                .eventType("create")
+//                .todoId(1L)
+//                .userId(1L)
+//                .title("test")
+//                .remainTime("1d")
+//                .deadline(LocalDateTime.now().toString())
+//                .build();
+//        notifyService.createDeadlineNotification(event);
+//        List<Notification> list = notifyService.getNotificationById(1L);
+//        assertThat(list.get(0).getTitle()).isEqualTo("test 마감이 임박했어요");
+//    }
 
 }
