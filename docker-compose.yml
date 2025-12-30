@@ -159,7 +159,7 @@ services:
     ports:
       - "8084:8084"
     depends_on:
-      mysql-notify:
+      mysql-focus:
         condition: service_healthy
     restart: on-failure
 
