@@ -6,8 +6,8 @@ spring:
     name: notify
   data:
     redis:
-      host: ${REDIS_REDIS_HOST}
-      port: ${REDIS_REDIS_PORT}
+      host: ${NOTIFY_REDIS_HOST}
+      port: ${NOTIFY_REDIS_PORT}
   datasource:
     url: ${NOTIFY_DATASOURCE_URL}
     username: ${NOTIFY_DATASOURCE_USERNAME}
