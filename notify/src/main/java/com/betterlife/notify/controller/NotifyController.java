@@ -2,6 +2,7 @@ package com.betterlife.notify.controller;
 
 import com.betterlife.notify.domain.FcmToken;
 import com.betterlife.notify.dto.FcmTokenRequest;
+import com.betterlife.notify.dto.FcmTokenResponse;
 import com.betterlife.notify.dto.WebNotify;
 import com.betterlife.notify.service.FcmService;
 import com.betterlife.notify.service.NotifyService;
@@ -27,7 +28,7 @@ public class NotifyController {
     }
 
     @GetMapping("/token")
-    public ResponseEntity<FcmToken> getFcmToken(
+    public ResponseEntity<FcmTokenResponse> getFcmToken(
             @RequestParam("device-type") String deviceType,
             @RequestParam("browser-type") String browserType,
             @RequestHeader("X-User-Id") Long id) {
@@ -35,7 +36,7 @@ public class NotifyController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<FcmToken> refreshFcmToken(@RequestBody FcmTokenRequest request, @RequestHeader("X-User-Id") Long id) {
+    public ResponseEntity<FcmTokenResponse> refreshFcmToken(@RequestBody FcmTokenRequest request, @RequestHeader("X-User-Id") Long id) {
         return ResponseEntity.ok(fcmService.saveFcmToken(id, request));
     }
 }

@@ -2,6 +2,7 @@ package com.betterlife.notify.service;
 
 import com.betterlife.notify.domain.FcmToken;
 import com.betterlife.notify.dto.FcmTokenRequest;
+import com.betterlife.notify.dto.FcmTokenResponse;
 import com.betterlife.notify.dto.WebMessageDto;
 import com.betterlife.notify.dto.WebNotify;
 import com.betterlife.notify.enums.DeviceType;
@@ -36,12 +37,13 @@ public class FcmService {
     private static final String TODO_INDEX_KEY = "notify:index:todo:";
     private static final String USER_INDEX_KEY = "notify:index:user:";
 
-    public FcmToken getFcmToken(Long id, String deviceType, String browserType) {
-        return fcmTokenRepository.findByUserIdAndDeviceTypeAndBrowserType(id, DeviceType.fromString(deviceType), browserType)
+    public FcmTokenResponse getFcmToken(Long id, String deviceType, String browserType) {
+        FcmToken fcmToken = fcmTokenRepository.findByUserIdAndDeviceTypeAndBrowserType(id, DeviceType.fromString(deviceType), browserType)
                 .orElseThrow(() -> new EntityNotFoundException("해당 채널용 FCM 토큰이 아직 발급되지 않았습니다."));
+        return FcmTokenResponse.fromEntity(fcmToken);
     }
 
-    public FcmToken saveFcmToken(Long id, FcmTokenRequest fcmTokenRequest) {
+    public FcmTokenResponse saveFcmToken(Long id, FcmTokenRequest fcmTokenRequest) {
         FcmToken fcmToken = FcmToken.builder()
                 .userId(id)
                 .token(fcmTokenRequest.getToken())
@@ -50,7 +52,8 @@ public class FcmService {
                 .updatedAt(LocalDate.now())
                 .enabled(true)
                 .build();
-        return fcmTokenRepository.save(fcmToken);
+        FcmToken saved = fcmTokenRepository.save(fcmToken);
+        return FcmTokenResponse.fromEntity(saved);
     }
 
     public void popDueNotify() throws Exception {

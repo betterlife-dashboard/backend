@@ -52,7 +52,7 @@ class NotifyServiceTest {
     private NotifyService notifyService;
 
     @Test
-    void createScheduleNotify_storesPayloadAndIndexes() throws Exception {
+    void createScheduleNotify_storesPayloadAndIndexes() {
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(redisTemplate.opsForZSet()).thenReturn(zSetOperations);
         when(redisTemplate.opsForSet()).thenReturn(setOperations);
@@ -101,7 +101,7 @@ class NotifyServiceTest {
     }
 
     @Test
-    void getNotifies_returnsNotifiesFromRedis() throws Exception {
+    void getNotifies_returnsNotifiesFromRedis() {
         when(redisTemplate.opsForSet()).thenReturn(setOperations);
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(setOperations.members("notify:index:todo:9")).thenReturn(Set.of("id-1", "id-2"));
