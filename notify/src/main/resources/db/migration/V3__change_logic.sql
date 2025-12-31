@@ -1,6 +1,6 @@
 -- 다른 테이블 삭제 코드 추가
 
-DROP TABLE notifications_channels;
+DROP TABLE notification_channels;
 DROP TABLE notification_templates;
 DROP TABLE notifications;
 
