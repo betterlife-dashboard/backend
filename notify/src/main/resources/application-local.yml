@@ -17,3 +17,5 @@ spring:
     port: 5672
     username: admin
     password: admin
+
+GOOGLE_APPLICATION_CREDENTIALS: "/Users/hyeongsh/Space/project/better-life/backend/msa/notify/src/main/resources/firebase/betterlifeboard-firebase-adminsdk-fbsvc-0220222e5e.json"
