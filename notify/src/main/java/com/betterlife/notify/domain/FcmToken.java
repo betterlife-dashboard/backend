@@ -26,7 +26,7 @@ public class FcmToken {
     @Column(nullable = false)
     private String token;
 
-    @Column(columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(255)")
     @Enumerated(EnumType.STRING)
     private DeviceType deviceType;
 
