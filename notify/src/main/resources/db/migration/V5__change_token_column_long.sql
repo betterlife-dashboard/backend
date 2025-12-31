@@ -1,0 +1,2 @@
+ALTER TABLE fcm_tokens
+    MODIFY token VARCHAR(255) NOT NULL;
