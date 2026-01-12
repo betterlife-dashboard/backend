@@ -23,6 +23,9 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 20)
+    private String name;
+
     @Column(nullable = false, length = 255)
     private String email;
 
@@ -36,7 +39,8 @@ public class UserEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    public UserEntity(String email, String passwordHash) {
+    public UserEntity(String name, String email, String passwordHash) {
+        this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
     }
