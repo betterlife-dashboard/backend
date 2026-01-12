@@ -15,10 +15,10 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@RequestHeader("X-User-Id") Long userId) {
-        return ResponseEntity.ok(authService.me(userId));
-    }
+//    @GetMapping("/me")
+//    public ResponseEntity<UserResponse> me(@RequestHeader("X-User-Id") Long userId) {
+//        return ResponseEntity.ok(authService.me(userId));
+//    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -26,63 +26,63 @@ public class AuthController {
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
-        String refresh = authService.login(request);
-        ResponseCookie cookie = ResponseCookie.from("refresh_token", refresh)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("None")
-                .maxAge(2592000)
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.ok(authService.renew(refresh));
-    }
-
-    @PostMapping("/renew")
-    public ResponseEntity<LoginResponse> renew(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
-        String refresh = authService.checkRefresh(refreshToken);
-        ResponseCookie cookie = ResponseCookie.from("refresh_token", refresh)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("None")
-                .maxAge(2592000)
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.ok(authService.renew(refresh));
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
-        if (refreshToken != null) {
-            authService.logout(refreshToken);
-        }
-        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("None")
-                .maxAge(0)
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
-        if (refreshToken != null) {
-            authService.withdraw(refreshToken);
-        }
-        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("None")
-                .maxAge(0)
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.noContent().build();
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+//        String refresh = authService.login(request);
+//        ResponseCookie cookie = ResponseCookie.from("refresh_token", refresh)
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .sameSite("None")
+//                .maxAge(2592000)
+//                .build();
+//        response.addHeader("Set-Cookie", cookie.toString());
+//        return ResponseEntity.ok(authService.renew(refresh));
+//    }
+//
+//    @PostMapping("/renew")
+//    public ResponseEntity<LoginResponse> renew(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
+//        String refresh = authService.checkRefresh(refreshToken);
+//        ResponseCookie cookie = ResponseCookie.from("refresh_token", refresh)
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .sameSite("None")
+//                .maxAge(2592000)
+//                .build();
+//        response.addHeader("Set-Cookie", cookie.toString());
+//        return ResponseEntity.ok(authService.renew(refresh));
+//    }
+//
+//    @PostMapping("/logout")
+//    public ResponseEntity<Void> logout(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
+//        if (refreshToken != null) {
+//            authService.logout(refreshToken);
+//        }
+//        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .sameSite("None")
+//                .maxAge(0)
+//                .build();
+//        response.addHeader("Set-Cookie", cookie.toString());
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @DeleteMapping("/withdraw")
+//    public ResponseEntity<Void> withdraw(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
+//        if (refreshToken != null) {
+//            authService.withdraw(refreshToken);
+//        }
+//        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .sameSite("None")
+//                .maxAge(0)
+//                .build();
+//        response.addHeader("Set-Cookie", cookie.toString());
+//        return ResponseEntity.noContent().build();
+//    }
 }
