@@ -10,7 +10,6 @@ CREATE TABLE recur_tasks (
     id BIGINT NOT NULL AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
-    todo_type ENUM('TODO', 'FOCUS', 'WORKOUT') NOT NULL,
     is_all_day TINYINT(1) NOT NULL DEFAULT 0,
 
     repeat_type ENUM('DAILY', 'WEEKLY', 'MONTHLY') NOT NULL,
@@ -23,7 +22,6 @@ CREATE TABLE recur_tasks (
 
     start_date DATE NOT NULL,
     end_date DATE NULL,
-    active_from DATE NULL,
     is_calendar TINYINT(1) NOT NULL DEFAULT 0,
 
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -51,6 +49,8 @@ CREATE TABLE todos (
     at_time TIME NULL,
     completed_at DATETIME NULL,
     duration_sec INT NULL,
+    is_calendar TINYINT(1) NOT NULL DEFAULT 0,
+    reminder_mask TINYINT UNSIGNED NOT NULL DEFAULT 0,
 
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

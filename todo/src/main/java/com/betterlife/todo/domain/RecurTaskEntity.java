@@ -27,10 +27,6 @@ public class RecurTaskEntity {
     @Column(nullable = false, length = 255)
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "todo_type", nullable = false)
-    private TodoType type;
-
     @Column(name = "is_all_day", nullable = false)
     private boolean allDay = false;
 
@@ -59,9 +55,6 @@ public class RecurTaskEntity {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "active_from")
-    private LocalDate activeFrom;
-
     @Column(name = "is_calendar", nullable = false)
     private boolean calendar = false;
 
@@ -87,7 +80,6 @@ public class RecurTaskEntity {
     public RecurTaskEntity(
             Long userId,
             String title,
-            TodoType type,
             boolean allDay,
             RepeatType repeatType,
             Byte repeatInterval,
@@ -97,12 +89,10 @@ public class RecurTaskEntity {
             Byte reminderMask,
             LocalDate startDate,
             LocalDate endDate,
-            LocalDate activeFrom,
             boolean calendar
     ) {
         this.userId = userId;
         this.title = title;
-        this.type = type;
         this.allDay = allDay;
         this.repeatType = repeatType;
         this.repeatInterval = repeatInterval;
@@ -112,7 +102,6 @@ public class RecurTaskEntity {
         this.reminderMask = reminderMask;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.activeFrom = activeFrom;
         this.calendar = calendar;
     }
 
@@ -157,10 +146,6 @@ public class RecurTaskEntity {
     public void changeRepeatDuration(LocalDate newStartDate, LocalDate newEndDate) {
         this.startDate = newStartDate;
         this.endDate = newEndDate;
-    }
-
-    public void changeActiveFrom(LocalDate newActiveFrom) {
-        this.activeFrom = newActiveFrom;
     }
 
     public void onCalendar(boolean newCalendar) {

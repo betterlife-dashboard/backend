@@ -23,8 +23,11 @@ rabbitmq:
     exchange: event.user.deleted.exchange
     key: event.user.deleted.key
   todo-updated:
-    exchange: event.user.updated.exchange
-    key: event.user.updated.key
+    exchange: event.todo.updated.exchange
+    key: event.todo.updated.key
+  todo-created:
+    exchange: event.todo.created.exchange
+    key: event.todo.created.key
 
 springdoc:
   api-docs:
