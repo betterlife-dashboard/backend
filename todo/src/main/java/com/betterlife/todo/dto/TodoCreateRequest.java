@@ -30,18 +30,28 @@ public class TodoCreateRequest {
     @Schema(type = "string", format = "time", example = "00:00:00", nullable = true)
     private LocalTime atTime;
 
+    @Schema(example = "3")
+    private Byte reminderMask;
+
+    @Schema(example = "true")
+    private boolean calendar;
+
     @Builder
     public TodoCreateRequest(
             String title,
             String memo,
             boolean allDay,
             LocalDate occurrenceDate,
-            LocalTime atTime
+            LocalTime atTime,
+            Byte reminderMask,
+            boolean calendar
     ) {
         this.title = title;
         this.memo = memo;
         this.allDay = allDay;
         this.occurrenceDate = occurrenceDate;
         this.atTime = atTime;
+        this.reminderMask = reminderMask;
+        this.calendar = calendar;
     }
 }

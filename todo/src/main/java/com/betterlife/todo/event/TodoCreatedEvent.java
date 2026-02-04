@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
-public class TodoUpdatedEvent {
+public class TodoCreatedEvent {
     private Long id;
     private Long userId;
     private String title;
@@ -17,7 +17,7 @@ public class TodoUpdatedEvent {
     private Byte reminderMask;
 
     @Builder
-    public TodoUpdatedEvent(Long id, Long userId, String title, boolean allDay, LocalDate occurrenceDate, LocalTime atTime, Byte reminderMask) {
+    public TodoCreatedEvent(Long id, Long userId, String title, boolean allDay, LocalDate occurrenceDate, LocalTime atTime, Byte reminderMask) {
         this.id = id;
         this.userId = userId;
         this.title = title;

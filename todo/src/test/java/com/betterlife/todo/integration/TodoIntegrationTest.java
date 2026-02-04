@@ -55,6 +55,12 @@ public class TodoIntegrationTest extends IntegrationTestBase {
     @Value("${rabbitmq.todo-updated.key}")
     private String todoUpdatedKey;
 
+    @Value("${rabbitmq.todo-created.exchange}")
+    private String todoCreatedExchange;
+
+    @Value("${rabbitmq.todo-created.key}")
+    private String todoCreatedKey;
+
     @Test
     void create_todo_success_returns201_and_persists() throws Exception {
         todoRepository.deleteAll();
@@ -64,20 +70,33 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                   "memo": "always be happy",
                   "allDay": true,
                   "occurrenceDate": "2026-01-15",
-                  "atTime": "00:00:00"
+                  "atTime": "00:00:00",
+                  "reminderMask": 2,
+                  "calendar": true
                 }
                 """;
+
+        String queueName = declareTestQueue(todoCreatedExchange, todoCreatedKey);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/todo/create/todo")
                         .header("X-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createJson))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test To-Do"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test To-Do"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.reminderMask").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.calendar").value(true));
 
         List<TodoEntity> allByUserId = todoRepository.findAllByUserId(1L);
         assertThat(allByUserId.size()).isEqualTo(1);
         assertThat(allByUserId.get(0).getTitle()).isEqualTo("Test To-Do");
+        assertThat(allByUserId.get(0).getReminderMask()).isEqualTo((byte) 2);
+        assertThat(allByUserId.get(0).isCalendar()).isTrue();
+
+        Object payload = rabbitTemplate.receiveAndConvert(queueName, 2000);
+        assertThat(payload).isNotNull();
+        assertThat(payload.toString()).contains(allByUserId.get(0).getId().toString());
+        assertThat(payload.toString()).contains("reminderMask=2");
     }
 
     @Test
@@ -95,6 +114,8 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .atTime(LocalTime.of(9, 30))
                 .completedAt(null)
                 .durationSec(120)
+                .reminderMask((byte) 4)
+                .calendar(true)
                 .build());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/{id}", saved.getId())
@@ -102,7 +123,9 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(saved.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Detail Target"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.memo").value("memo-text"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.memo").value("memo-text"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.reminderMask").value(4))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.calendar").value(true));
     }
 
     @Test
@@ -120,6 +143,8 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .atTime(null)
                 .completedAt(null)
                 .durationSec(null)
+                .reminderMask((byte) 1)
+                .calendar(false)
                 .build());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/{id}", saved.getId())
@@ -142,6 +167,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .occurrenceDate(LocalDate.of(2026, 1, 10))
                 .atTime(null)
                 .completedAt(null)
+                .reminderMask((byte) 4)
                 .durationSec(null)
                 .build());
 
@@ -172,6 +198,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .occurrenceDate(LocalDate.of(2026, 1, 11))
                 .atTime(null)
                 .completedAt(null)
+                .reminderMask((byte) 4)
                 .durationSec(null)
                 .build());
 
@@ -195,6 +222,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .occurrenceDate(LocalDate.of(2026, 1, 12))
                 .atTime(null)
                 .completedAt(null)
+                .reminderMask((byte) 4)
                 .durationSec(null)
                 .build());
 
@@ -242,6 +270,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .occurrenceDate(LocalDate.of(2026, 1, 13))
                 .atTime(null)
                 .completedAt(null)
+                .reminderMask((byte) 4)
                 .durationSec(null)
                 .build());
 

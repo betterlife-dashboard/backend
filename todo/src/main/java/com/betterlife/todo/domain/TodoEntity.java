@@ -77,6 +77,12 @@ public class TodoEntity {
     @Column(name = "duration_sec")
     private Integer durationSec;
 
+    @Column(name = "reminder_mask", nullable = false)
+    private Byte reminderMask = 0;
+
+    @Column(name = "is_calendar")
+    private boolean calendar;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -107,7 +113,9 @@ public class TodoEntity {
             LocalDate occurrenceDate,
             LocalTime atTime,
             LocalDateTime completedAt,
-            Integer durationSec
+            Integer durationSec,
+            Byte reminderMask,
+            boolean calendar
     ) {
         this.userId = userId;
         this.recurTask = recurTask;
@@ -120,6 +128,8 @@ public class TodoEntity {
         this.atTime = atTime;
         this.completedAt = completedAt;
         this.durationSec = durationSec;
+        this.reminderMask = reminderMask;
+        this.calendar = calendar;
     }
 
     public void repending() {
@@ -141,6 +151,8 @@ public class TodoEntity {
         this.todoStatus = request.getTodoStatus();
         this.title = request.getTitle();
         this.memo = request.getMemo();
+        this.reminderMask = request.getReminderMask();
+        this.calendar = request.isCalendar();
         changeTime(request.isAllDay(), request.getOccurrenceDate(), request.getAtTime());
     }
 

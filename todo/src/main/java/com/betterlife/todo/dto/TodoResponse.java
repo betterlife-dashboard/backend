@@ -27,11 +27,13 @@ public class TodoResponse {
     private String memo;
     private boolean allDay;
     private LocalDate occurrenceDate;
+    private boolean calendar;
 
     @Schema(type = "string", format = "time", example = "00:00:00", nullable = true)
     private LocalTime atTime;
     private LocalDateTime completedAt;
     private Integer durationSec;
+    private Byte reminderMask;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -48,8 +50,10 @@ public class TodoResponse {
         dto.atTime = todo.getAtTime();
         dto.completedAt = todo.getCompletedAt();
         dto.durationSec = todo.getDurationSec();
+        dto.reminderMask = todo.getReminderMask();
         dto.createdAt = todo.getCreatedAt();
         dto.updatedAt = todo.getUpdatedAt();
+        dto.calendar = todo.isCalendar();
         return dto;
     }
 }

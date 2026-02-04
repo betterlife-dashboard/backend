@@ -34,8 +34,11 @@ public class RabbitConfig {
     @Value("${rabbitmq.todo-deleted.exchange}")
     private String todoDeletedExchangeName;
 
-    @Value("${rabbitmq.user-updated.exchange}")
-    private String userUpdatedExchangeName;
+    @Value("${rabbitmq.todo-created.exchange}")
+    private String todoCreatedExchangeName;
+
+    @Value("${rabbitmq.todo-updated.exchange}")
+    private String todoUpdatedExchangeName;
 
     @Bean
     public DirectExchange userDeletedExchange() {
@@ -58,8 +61,13 @@ public class RabbitConfig {
     }
 
     @Bean
+    public DirectExchange todoCreatedExchange() {
+        return new DirectExchange(todoCreatedExchangeName);
+    }
+
+    @Bean
     public DirectExchange todoUpdatedExchange() {
-        return new DirectExchange(userUpdatedExchangeName);
+        return new DirectExchange(todoUpdatedExchangeName);
     }
 
     @Bean
