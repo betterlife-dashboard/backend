@@ -29,7 +29,6 @@ public class TodoService {
     }
 
     public TodoResponse createTodo(Long userId, TodoCreateRequest todoCreateRequest) {
-        Byte reminderMask = todoCreateRequest.getReminderMask() == null ? 0 : todoCreateRequest.getReminderMask();
         TodoEntity todo = TodoEntity.builder()
                 .userId(userId)
                 .recurTask(null)
@@ -42,7 +41,7 @@ public class TodoService {
                 .atTime(todoCreateRequest.getAtTime())
                 .completedAt(null)
                 .durationSec(null)
-                .reminderMask(reminderMask)
+                .reminderMask(todoCreateRequest.getReminderMask())
                 .calendar(todoCreateRequest.isCalendar())
                 .build();
         TodoEntity saved = todoRepository.save(todo);

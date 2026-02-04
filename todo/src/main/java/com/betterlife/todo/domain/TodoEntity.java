@@ -78,7 +78,7 @@ public class TodoEntity {
     private Integer durationSec;
 
     @Column(name = "reminder_mask", nullable = false)
-    private Byte reminderMask = 0;
+    private Byte reminderMask;
 
     @Column(name = "is_calendar")
     private boolean calendar;

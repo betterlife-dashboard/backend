@@ -1,19 +1,11 @@
 package com.betterlife.todo.service;
 
-import com.betterlife.todo.domain.RecurTaskEntity;
-import com.betterlife.todo.domain.TodoEntity;
 import com.betterlife.todo.dto.RecurTaskCreateRequest;
 import com.betterlife.todo.dto.RecurTaskResponse;
-import com.betterlife.todo.dto.TodoResponse;
-import com.betterlife.todo.enums.TodoType;
 import com.betterlife.todo.repository.RecurTaskRepository;
 import com.betterlife.todo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor

@@ -118,7 +118,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .calendar(true)
                 .build());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/{id}", saved.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/todo/{id}", saved.getId())
                         .header("X-User-Id", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(saved.getId()))
@@ -147,7 +147,7 @@ public class TodoIntegrationTest extends IntegrationTestBase {
                 .calendar(false)
                 .build());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/{id}", saved.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/todo/detail/todo/{id}", saved.getId())
                         .header("X-User-Id", 2))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("이 Todo에 접근할 권한이 없습니다."));
