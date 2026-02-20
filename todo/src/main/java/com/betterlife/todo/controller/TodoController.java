@@ -148,4 +148,46 @@ public class TodoController {
         RecurTaskResponse recurTaskResponse = recurTaskService.getRecurTaskById(id, userId);
         return ResponseEntity.ok(recurTaskResponse);
     }
+
+    @Operation(operationId = "recurTaskDelete", summary = "반복 일정 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "반복 일정 삭제 완료",
+                    content = @Content(schema = @Schema(implementation = RecurTaskResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 검증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorMessageDto.class))),
+            @ApiResponse(responseCode = "403", description = "허용되지 않은 반복 일정 접근",
+                    content = @Content(schema = @Schema(implementation = ErrorMessageDto.class))),
+    })
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "X-User-Id",
+            required = true,
+            schema = @Schema(type = "integer", defaultValue = "-1", example = "-1")
+    )
+    @DeleteMapping("/delete/recur/{id}")
+    public ResponseEntity<Void> deleteRecurTask(@PathVariable("id") Long id, @RequestHeader("X-User-Id") Long userId) {
+        recurTaskService.deleteRecurTask(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(operationId = "recurTaskUpdate", summary = "반복 일정 변경")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "반복 일정 변경 완료",
+                    content = @Content(schema = @Schema(implementation = TodoResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 검증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorMessageDto.class))),
+            @ApiResponse(responseCode = "403", description = "허용되지 않은 반복 일정 접근",
+                    content = @Content(schema = @Schema(implementation = ErrorMessageDto.class))),
+    })
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "X-User-Id",
+            required = true,
+            schema = @Schema(type = "integer", defaultValue = "-1", example = "-1")
+    )
+    @PutMapping("/put/recur/{id}")
+    public ResponseEntity<RecurTaskResponse> updateRecurTask(@PathVariable("id") Long id, @RequestBody RecurTaskUpdateRequest request, @RequestHeader("X-User-Id") Long userId) {
+        RecurTaskResponse updated = recurTaskService.updateRecurTask(id, userId, request);
+        return ResponseEntity.ok(updated);
+    }
 }

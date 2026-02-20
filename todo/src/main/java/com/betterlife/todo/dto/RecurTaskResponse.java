@@ -1,10 +1,12 @@
 package com.betterlife.todo.dto;
 
+import com.betterlife.todo.domain.RecurTaskEntity;
 import com.betterlife.todo.enums.RepeatType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -12,60 +14,42 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @ToString
 public class RecurTaskResponse {
-    @Schema(example = "1")
     private Long id;
-    @Schema(example = "1")
     private Long userId;
-    @Schema(example = "Test To-Do")
     private String title;
-    @Schema(example = "true")
     private boolean allDay;
-    @Schema(example = "DAILY")
     private RepeatType repeatType;
-    @Schema(type = "integer", format = "int32", example = "1")
+    @Schema(type = "integer")
     private Byte repeatInterval;
-    @Schema(type = "integer", format = "int32", example = "0")
+    @Schema(type = "integer")
     private Byte weeklyMask;
-    @Schema(type = "integer", format = "int32", example = "0")
+    @Schema(type = "integer")
     private Byte monthlyDay;
     @Schema(type = "string", format = "time", example = "00:00:00", nullable = true)
     private LocalTime atTime;
-    @Schema(type = "integer", format = "int32", example = "3")
+    @Schema(type = "integer")
     private Byte reminderMask;
-    @Schema(example = "2026-01-15")
     private LocalDate startDate;
-    @Schema(example = "2026-01-20")
     private LocalDate endDate;
-    @Schema(example = "true")
     private boolean calendar;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    @Builder
-    public RecurTaskResponse(
-            Long id,
-            Long userId,
-            String title,
-            boolean allDay,
-            RepeatType repeatType,
-            Byte repeatInterval,
-            Byte weeklyMask,
-            Byte monthlyDay,
-            LocalTime atTime,
-            Byte reminderMask,
-            LocalDate startDate,
-            LocalDate endDate,
-            boolean calendar) {
-        this.id = id;
-        this.userId = userId;
-        this.title = title;
-        this.allDay = allDay;
-        this.repeatType = repeatType;
-        this.repeatInterval = repeatInterval;
-        this.weeklyMask = weeklyMask;
-        this.monthlyDay = monthlyDay;
-        this.atTime = atTime;
-        this.reminderMask = reminderMask;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.calendar = calendar;
+    public static RecurTaskResponse fromEntity(RecurTaskEntity entity) {
+        RecurTaskResponse dto = new RecurTaskResponse();
+        dto.id = entity.getId();
+        dto.userId = entity.getUserId();
+        dto.title = entity.getTitle();
+        dto.allDay = entity.isAllDay();
+        dto.repeatType = entity.getRepeatType();
+        dto.repeatInterval = entity.getRepeatInterval();
+        dto.weeklyMask = entity.getWeeklyMask();
+        dto.monthlyDay = entity.getMonthlyDay();
+        dto.atTime = entity.getAtTime();
+        dto.reminderMask = entity.getReminderMask();
+        dto.startDate = entity.getStartDate();
+        dto.endDate = entity.getEndDate();
+        dto.calendar = entity.isCalendar();
+        return dto;
     }
 }

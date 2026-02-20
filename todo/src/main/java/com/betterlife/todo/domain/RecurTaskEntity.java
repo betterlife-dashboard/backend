@@ -1,5 +1,6 @@
 package com.betterlife.todo.domain;
 
+import com.betterlife.todo.dto.RecurTaskUpdateRequest;
 import com.betterlife.todo.enums.RepeatType;
 import com.betterlife.todo.enums.TodoType;
 import jakarta.persistence.*;
@@ -105,8 +106,18 @@ public class RecurTaskEntity {
         this.calendar = calendar;
     }
 
-    public void changeTitle(String newTitle) {
-        this.title = newTitle;
+    public void update(RecurTaskUpdateRequest request) {
+        this.title = request.getTitle();
+        this.allDay = request.isAllDay();
+        this.repeatType = request.getRepeatType();
+        this.repeatInterval = request.getRepeatInterval();
+        this.weeklyMask = request.getWeeklyMask();
+        this.monthlyDay = request.getMonthlyDay();
+        this.atTime = request.getAtTime();
+        this.reminderMask = request.getReminderMask();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.calendar = request.isCalendar();
     }
 
     public void changeTime(LocalTime newTime) {
@@ -137,18 +148,5 @@ public class RecurTaskEntity {
             }
             this.monthlyDay = newRepeat;
         }
-    }
-
-    public void changeReminder(Byte newReminderMask) {
-        this.reminderMask = newReminderMask;
-    }
-
-    public void changeRepeatDuration(LocalDate newStartDate, LocalDate newEndDate) {
-        this.startDate = newStartDate;
-        this.endDate = newEndDate;
-    }
-
-    public void onCalendar(boolean newCalendar) {
-        this.calendar = newCalendar;
     }
 }

@@ -28,11 +28,11 @@ public class TodoResponse {
     private boolean allDay;
     private LocalDate occurrenceDate;
     private boolean calendar;
-
     @Schema(type = "string", format = "time", example = "00:00:00", nullable = true)
     private LocalTime atTime;
     private LocalDateTime completedAt;
     private Integer durationSec;
+    @Schema(type = "integer", example = "3")
     private Byte reminderMask;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

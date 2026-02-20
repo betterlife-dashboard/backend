@@ -64,5 +64,5 @@ CREATE TABLE todos (
 
     CONSTRAINT fk_todos_recur_task
        FOREIGN KEY (recur_task_id) REFERENCES recur_tasks(id)
-           ON DELETE CASCADE
+           ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
