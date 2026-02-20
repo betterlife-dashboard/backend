@@ -50,6 +50,8 @@ public class RecurTaskResponse {
         dto.startDate = entity.getStartDate();
         dto.endDate = entity.getEndDate();
         dto.calendar = entity.isCalendar();
+        dto.createdAt = entity.getCreatedAt();
+        dto.updatedAt = entity.getUpdatedAt();
         return dto;
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,17 +37,8 @@ public class EventProducer {
     @Value("${rabbitmq.todo-created.key}")
     private String todoCreatedKey;
 
-    public void sendTodoCreatedEvent(TodoEntity todo) {
-        TodoCreatedEvent todoCreatedEvent = TodoCreatedEvent.builder()
-                .id(todo.getId())
-                .userId(todo.getUserId())
-                .title(todo.getTitle())
-                .allDay(todo.isAllDay())
-                .occurrenceDate(todo.getOccurrenceDate())
-                .atTime(todo.getAtTime())
-                .reminderMask(todo.getReminderMask())
-                .build();
-
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendTodoCreatedEvent(TodoCreatedEvent todoCreatedEvent) {
         CorrelationData cd = new CorrelationData("todoCreated:" + todoCreatedEvent.getId() + ":" + UUID.randomUUID());
 
         rabbitTemplate.convertAndSend(
@@ -60,17 +53,8 @@ public class EventProducer {
         );
     }
 
-    public void sendTodoUpdatedEvent(TodoEntity todo) {
-        TodoUpdatedEvent todoUpdatedEvent = TodoUpdatedEvent.builder()
-                .id(todo.getId())
-                .userId(todo.getUserId())
-                .title(todo.getTitle())
-                .allDay(todo.isAllDay())
-                .occurrenceDate(todo.getOccurrenceDate())
-                .atTime(todo.getAtTime())
-                .reminderMask(todo.getReminderMask())
-                .build();
-
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendTodoUpdatedEvent(TodoUpdatedEvent todoUpdatedEvent) {
         CorrelationData cd = new CorrelationData("userUpdated:" + todoUpdatedEvent.getId() + ":" + UUID.randomUUID());
 
         rabbitTemplate.convertAndSend(
@@ -85,10 +69,9 @@ public class EventProducer {
         );
     }
 
-    public void sendTodoDeletedEvent(Long todoId) {
-        TodoDeletedEvent todoDeletedEvent = new TodoDeletedEvent(todoId);
-
-        CorrelationData cd = new CorrelationData("userDeleted:" + todoId + ":" + UUID.randomUUID());
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendTodoDeletedEvent(TodoDeletedEvent todoDeletedEvent) {
+        CorrelationData cd = new CorrelationData("userDeleted:" + todoDeletedEvent.getId() + ":" + UUID.randomUUID());
 
         rabbitTemplate.convertAndSend(
                 todoDeletedExchangeName,

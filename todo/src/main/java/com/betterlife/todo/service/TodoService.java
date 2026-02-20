@@ -3,22 +3,20 @@ package com.betterlife.todo.service;
 import com.betterlife.todo.domain.RecurTaskEntity;
 import com.betterlife.todo.domain.TodoEntity;
 import com.betterlife.todo.dto.*;
-import com.betterlife.todo.enums.RepeatType;
 import com.betterlife.todo.enums.TodoStatus;
 import com.betterlife.todo.enums.TodoType;
-import com.betterlife.todo.event.EventProducer;
+import com.betterlife.todo.event.TodoCreatedEvent;
+import com.betterlife.todo.event.TodoDeletedEvent;
+import com.betterlife.todo.event.TodoUpdatedEvent;
 import com.betterlife.todo.exception.AccessDeniedException;
 import com.betterlife.todo.exception.TodoNotFoundException;
 import com.betterlife.todo.repository.TodoRepository;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ import java.util.List;
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    private final EventProducer eventProducer;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public TodoResponse getTodoById(Long userId, Long todoId) {
         TodoEntity todo = todoRepository.findById(todoId)
@@ -38,6 +36,7 @@ public class TodoService {
         return TodoResponse.fromEntity(todo);
     }
 
+    @Transactional
     public TodoResponse createTodo(Long userId, TodoCreateRequest todoCreateRequest) {
         TodoEntity todo = TodoEntity.builder()
                 .userId(userId)
@@ -55,17 +54,26 @@ public class TodoService {
                 .calendar(todoCreateRequest.isCalendar())
                 .build();
         TodoEntity saved = todoRepository.save(todo);
-        eventProducer.sendTodoCreatedEvent(saved);
+        applicationEventPublisher.publishEvent(TodoCreatedEvent.builder()
+                        .id(todo.getId())
+                        .userId(todo.getUserId())
+                        .title(todo.getTitle())
+                        .allDay(todo.isAllDay())
+                        .occurrenceDate(todo.getOccurrenceDate())
+                        .atTime(todo.getAtTime())
+                        .reminderMask(todo.getReminderMask())
+                        .build());
         return TodoResponse.fromEntity(saved);
     }
 
+    @Transactional
     public void deleteTodo(Long userId, Long todoId) {
         TodoEntity todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoNotFoundException("존재하지 않는 Todo입니다."));
         if (!todo.getUserId().equals(userId)) {
             throw new AccessDeniedException("이 Todo에 접근할 권한이 없습니다.");
         }
-        eventProducer.sendTodoDeletedEvent(todoId);
+        applicationEventPublisher.publishEvent(new TodoDeletedEvent(todoId));
         todoRepository.deleteById(todoId);
     }
 
@@ -73,7 +81,7 @@ public class TodoService {
     public void deleteTodoByRecurTask(Long recurTaskId) {
         List<TodoEntity> todos = todoRepository.findAllByRecurTaskIdAndOccurrenceDateGreaterThanEqual(recurTaskId, LocalDate.now());
         for (TodoEntity todo : todos) {
-            eventProducer.sendTodoDeletedEvent(todo.getId());
+            applicationEventPublisher.publishEvent(new TodoDeletedEvent(todo.getId()));
             todoRepository.deleteById(todo.getId());
         }
     }
@@ -85,7 +93,15 @@ public class TodoService {
             throw new AccessDeniedException("이 Todo에 접근할 권한이 없습니다.");
         }
         todo.update(todoRequest);
-        eventProducer.sendTodoUpdatedEvent(todo);
+        applicationEventPublisher.publishEvent(TodoUpdatedEvent.builder()
+                        .id(todo.getId())
+                        .userId(todo.getUserId())
+                        .title(todo.getTitle())
+                        .allDay(todo.isAllDay())
+                        .occurrenceDate(todo.getOccurrenceDate())
+                        .atTime(todo.getAtTime())
+                        .reminderMask(todo.getReminderMask())
+                        .build());
         return TodoResponse.fromEntity(todo);
     }
 
@@ -108,7 +124,15 @@ public class TodoService {
                     .calendar(recurTask.isCalendar())
                     .build();
             TodoEntity saved = todoRepository.save(todo);
-            eventProducer.sendTodoCreatedEvent(saved);
+            applicationEventPublisher.publishEvent(TodoCreatedEvent.builder()
+                    .id(saved.getId())
+                    .userId(saved.getUserId())
+                    .title(saved.getTitle())
+                    .allDay(saved.isAllDay())
+                    .occurrenceDate(saved.getOccurrenceDate())
+                    .atTime(saved.getAtTime())
+                    .reminderMask(saved.getReminderMask())
+                    .build());
         }
     }
 

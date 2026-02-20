@@ -173,7 +173,7 @@ public class TodoController {
     @Operation(operationId = "recurTaskUpdate", summary = "반복 일정 변경")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "반복 일정 변경 완료",
-                    content = @Content(schema = @Schema(implementation = TodoResponse.class))),
+                    content = @Content(schema = @Schema(implementation = RecurTaskResponse.class))),
             @ApiResponse(responseCode = "401", description = "토큰 검증 실패",
                     content = @Content(schema = @Schema(implementation = ErrorMessageDto.class))),
             @ApiResponse(responseCode = "403", description = "허용되지 않은 반복 일정 접근",
